@@ -1,15 +1,15 @@
-#lang br
+#lang racket/base
 
-(define (read-syntax path port)
-  (define src-lines (port->lines port))
-  0)
+(require hawk/expander (for-syntax racket/base syntax/parse))
+(module reader syntax/module-reader hawk)
+;(module hawk hawk/expander)
+(provide (all-from-out racket/base)
+         #%datum
+         #%module-begin
+         #%app
+         #%top
+         #%top-interaction)
 
-(define (count-whitespace lst)
-  (if (or (null? lst) (not (eq? (car lst) #\space)))
-      0
-      (+ (count-whitespace (cdr lst)) 1)))
 
-(define (.? lst)
-  (if (and (not (null? lst)) (eq? (car lst) #\.))
-      #t
-      #f))
+
+

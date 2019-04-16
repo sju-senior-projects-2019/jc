@@ -3,7 +3,7 @@
 
 (require racket (for-syntax racket/syntax syntax/parse))
 (provide (except-out (all-from-out racket) define)
-         define~
+         (rename-out [define~ define])
          Real)
 
 
@@ -14,6 +14,9 @@
 
 (define-syntax (define~ stx)
   (syntax-parse stx
+    [(_ name:id type:expr x:expr)
+     #'(define/contract name type x)]
+
     [(_ (name:id args:id ...)
         typedef:expr
         body)
@@ -21,5 +24,5 @@
          (name args ...)
          typedef
          body)]
-
     ))
+         

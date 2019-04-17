@@ -40,7 +40,7 @@
         (with-syntax
          ([pred-name (rename string-downcase "~a?")]
           [macr-name (rename string-titlecase "~a")])
-     #'(begin
+     #''(begin
          (define (pred-name arg)
            (and (pred arg) ...))
          (define-syntax macr-name

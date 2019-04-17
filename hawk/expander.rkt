@@ -4,14 +4,23 @@
 (require racket (for-syntax racket/syntax syntax/parse))
 (provide (except-out (all-from-out racket) define)
          (rename-out [define~ define])
-         define-type
-         Real)
+         )
 
-;Test macro 
-(define-syntax Real
-    (lambda (stx)
-      (syntax-case stx ()
-        [Real (identifier? #'Real) #'real?])))
+(define-syntax (define-base-type stx)
+  (syntax-parse stx
+    [(_ name pred)
+     #'(define-syntax name
+         (lambda (stx)
+           (syntax-case stx ()
+             [name #'pred])))]))
+
+(define-base-type Re real?)
+
+
+;(define-syntax Real
+;    (lambda (stx)
+;      (syntax-case stx ()
+;        [Real (identifier? #'Real) #'real?])))
 
 ;Implements dynamic typechecking
 (define-syntax (define~ stx)

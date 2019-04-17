@@ -18,7 +18,6 @@
   (syntax-parse stx
     [(_ name:id type:expr x:expr)
      #'(define/contract name type x)]
-
     [(_ (name:id args:id ...)
         typedef:expr
         body)
@@ -30,17 +29,25 @@
 (define-syntax (define-type stx)
   (syntax-parse stx
     [(_ name:id (pred ...))
-     (with-syntax
-        ([pred-name
-          (datum->syntax
-           #'name
-           (string->symbol
-            (string-downcase
-             (format "~a?" (syntax->datum #'name)))))])
+     (define (rename case form)
+       (datum->syntax
+        #'name
+        (string->symbol
+         (case
+          (format form
+                  (syntax->datum
+                   #'name))))))
+        (with-syntax
+         ([pred-name (rename string-downcase "~a?")]
+          [macr-name (rename string-titlecase "~a")])
      #''(begin
          (define (pred-name arg)
-           (and (pred arg) ...))))]))
+           (and (pred arg) ...))
+         (define-syntax macr-name
+           (lambda (stx-m)
+             (syntax-case stx-m ()
+               [macr-name #'pred-name])))))]))
+               
 
 
 
-(define-type NUM (number? real?))

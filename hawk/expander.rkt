@@ -7,9 +7,38 @@
                            [exact-integer? int?]))
 (provide (except-out (all-from-out racket) define)
          (rename-out [define~ define])
-          define-type)
+          define-type
+          sum-type
+          or
+          and)
 
-;Macro to create the simple types. It is wasteful to put the formating restraints on types I define
+(define (elem? a l)
+  (cond [(null? l) #f]
+        [(eq? (car l) a) #t]
+        [else (elem? a (cdr l))]))
+
+;First class and, or so that they can be used as function and macros
+(define-syntax (or stx)
+    (syntax-parse stx
+     [(_:id)
+      #'#f]
+     [(_:id a b ...)
+      #'(if a a (or b ...))]
+     [_:id
+      #'(lambda arg
+          (elem? #t arg))]))
+
+(define-syntax (and stx)
+  (syntax-parse stx
+    [(_:id)
+     #'#t]
+    [(_:id a b ...)
+     #'(if a (and b ...) a)]
+    [_:id
+     #'(lambda arg
+         (not (elem? #f arg)))]))
+
+;Macro to create the simple types. It is wasteful to put the formating enforcers on types I define
 (define-syntax (define-base-type stx)
   (syntax-parse stx
     [(_ name pred)
@@ -44,20 +73,23 @@
          typedef
          body)]))
 
+;Alters enviorment variables on define so all type created predicates and type names are formated correctly 
+(define-for-syntax (alter name case form)
+  (datum->syntax
+     name
+       (string->symbol
+        (case
+         (format form
+                 (syntax->datum
+                   name))))))
+
+
 (define-syntax (define-type stx)
   (syntax-parse stx
     [(_ name:id (pred ...))
-     (define (rename case form)
-       (datum->syntax
-        #'name
-        (string->symbol
-         (case
-          (format form
-                  (syntax->datum
-                   #'name))))))
         (with-syntax
-         ([pred-name (rename string-downcase "~a?")]
-          [macr-name (rename string-titlecase "~a")])
+         ([pred-name (alter #'name string-downcase "~a?")]
+          [macr-name (alter #'name string-titlecase "~a")])
      #'(begin
          (define (pred-name arg)
            (and (pred arg) ...))
@@ -65,9 +97,12 @@
            (lambda (stx-m)
              (syntax-case stx-m ()
                [macr-name #'pred-name])))))]))
- 
-               
 
+(define-syntax (sum-type stx)
+  (syntax-parse stx
+    [(_ pred ...)
+     #'(lambda (x) (or (pred x) ...))]))
 
+     
 
 

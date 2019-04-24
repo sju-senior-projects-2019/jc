@@ -10,7 +10,8 @@
           define-type
           sum-type
           or
-          and)
+          and
+          list-type)
 
 (define (elem? a l)
   (cond [(null? l) #f]
@@ -103,6 +104,7 @@
     [(_ pred ...)
      #'(lambda (x) (or (pred x) ...))]))
 
-     
-
-
+(define-syntax (list-type stx)
+  (syntax-parse stx
+    [(_ pred ...)
+     #'(lambda (lst) (apply and (map (lambda (x) (and (pred x) ...)) lst )))]))

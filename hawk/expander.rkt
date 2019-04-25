@@ -60,6 +60,7 @@
 (define-base-type Pair pair?)
 (define-base-type Symbol symbol?)
 (define-base-type String string?)
+(define-base-type Void void?)
 
 
 ;Alters enviorment variables on define so all type created predicates and type names are formated correctly 

@@ -51,6 +51,7 @@
              [name #'pred])))
         (provide name pred))]))
 
+(define-base-type Int int?)
 (define-base-type Real real?)
 (define-base-type Bool bool?)
 (define-base-type Num num?)

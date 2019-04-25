@@ -6,13 +6,14 @@
                            [number? num?  ]
                            [exact-integer? int?]))
 (provide (except-out (all-from-out racket) define)
-         (rename-out [define~ define])
+         (rename-out [define/contract define])
           define-type
           sum-type
           or
           and
           list-type
-          pair-type)
+          pair-type
+          Any)
 
 (define (elem? a l)
   (cond [(null? l) #f]
@@ -59,20 +60,7 @@
 (define-base-type Pair pair?)
 (define-base-type Symbol symbol?)
 (define-base-type String string?)
-       
 
-;Implements dynamic typechecking
-(define-syntax (define~ stx)
-  (syntax-parse stx
-    [(_ name:id type:expr x:expr)
-     #'(define/contract name type x)]
-    [(_ (name:id args:id ...)
-        typedef:expr
-        body)
-     #'(define/contract
-         (name args ...)
-         typedef
-         body)]))
 
 ;Alters enviorment variables on define so all type created predicates and type names are formated correctly 
 (define-for-syntax (alter name case form)
@@ -113,4 +101,5 @@
   (syntax-parse stx
     [(_ (pred1 ...) (pred2 ...))
      #'(lambda (x) (and (pred1 (car x)) ... (pred2 (cdr x)) ...))]))
-     
+
+(define-type any ((lambda (x) #t)))

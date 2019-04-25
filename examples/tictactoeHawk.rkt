@@ -33,7 +33,7 @@
                   (else (play depth (add1 turn) (if (even? turn)
                                                     (ai depth board)
                                                     (player board)))))))
-  (play 3 0 '((- - -) (- g -) (- - -))))
+  (play 3 0 '((- - -) (- - -) (- - -))))
 
 
 (define max-num (Int) 100)

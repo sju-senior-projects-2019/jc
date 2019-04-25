@@ -11,7 +11,8 @@
           sum-type
           or
           and
-          list-type)
+          list-type
+          pair-type)
 
 (define (elem? a l)
   (cond [(null? l) #f]
@@ -57,8 +58,6 @@
 (define-base-type Pair pair?)
 (define-base-type Symbol symbol?)
 (define-base-type String string?)
-(define-base-type Vector vector?)
-(define-base-type Hash hash?)
        
 
 ;Implements dynamic typechecking
@@ -108,3 +107,9 @@
   (syntax-parse stx
     [(_ pred ...)
      #'(lambda (lst) (apply and (map (lambda (x) (and (pred x) ...)) lst )))]))
+
+(define-syntax (pair-type stx)
+  (syntax-parse stx
+    [(_ (pred1 ...) (pred2 ...))
+     #'(lambda (x) (and (pred1 (car x)) ... (pred2 (cdr x)) ...))]))
+     

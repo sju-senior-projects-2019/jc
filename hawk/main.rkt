@@ -4,12 +4,11 @@
 (module reader syntax/module-reader hawk)
 (provide 
          (all-from-out hawk/expander)
-         #%datum ;May have to change
-         #%module-begin ;Must change
-         #%app ;May have to change
-         #%top ;Don't have to change
-         #%top-interaction) ;Don't have to change
-
+         #%datum
+         #%module-begin
+         #%app
+         #%top 
+         #%top-interaction) 
 
 
 

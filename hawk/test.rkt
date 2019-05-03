@@ -1,5 +1,4 @@
 #lang hawk
 
-(define-type foo ((lambda (x) (and (num? (car x)) (num? (cdr x)) (> (cdr x) (car x))))))
-(define foo (Foo) '(3 . 5))
-
+(define-type foo ((product-type num? real? symbol?)))
+(define x (Foo) '(10 3 d))

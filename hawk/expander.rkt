@@ -13,7 +13,9 @@
           and
           list-type
           pair-type
-          Any)
+          Any
+          any?
+          product-type)
 
 (define (elem? a l)
   (cond [(null? l) #f]
@@ -102,5 +104,14 @@
   (syntax-parse stx
     [(_ (pred1 ...) (pred2 ...))
      #'(lambda (x) (and (pred1 (car x)) ... (pred2 (cdr x)) ...))]))
+
+(define-syntax (product-type stx)
+  (syntax-parse stx
+    [(_ pred ...)
+     (with-syntax
+        ([pred-list #'(list pred ...)])
+       #'(lambda (x) (apply and
+                            (map (lambda (y) (eval y (make-base-namespace)))
+                                 (for/list ([f pred-list] [v x]) (f v))))))]))
 
 (define-type any ((lambda (x) #t)))
